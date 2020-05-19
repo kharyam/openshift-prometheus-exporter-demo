@@ -1,5 +1,12 @@
 # Prometheus Demo
 
+This project demonstrates the deployment of a custom promethetheus exporter in OpenShift 4.x
+
+![Grafana Dashboard](images/grafana.png)
+
+
+## Deploying the Demo
+
 1. Create config map for enabling service monitoring (tech preview).  Wait for prometheus pods to be running 
 
 ```
