@@ -51,15 +51,17 @@ oc new-app grafana/grafana
 
 ```
 
-9. Create grafana data sources 
+9. Create grafana data sources and dashboard 
 ```
-sed "s/SERVICE_SECRET/$(oc sa get-token grafana)/g" secret-openshift-ds.yml | oc create -f -
-
+sed "s/SERVICE_SECRET/$(oc sa get-token grafana)/g" secret-openshift-ds.yml | oc apply -f -
+oc apply -f dashboard-secret.yml 
+oc apply -f dashboard-config-secret.yml 
 ``` 
 
 10. Mount secrets
 ```
 oc set volume dc/grafana --add --name=openshift-monitoring-grafana-datasource-volume --type=secret --secret-name=openshift-monitoring-grafana-datasource  --mount-path=/etc/grafana/provisioning/datasources
+oc set volume dc/grafana --add --name=openshift-monitoring-grafana-dashboard-volume --type=secret --secret-name=openshift-monitoring-grafana-dashboard  --mount-path=/etc/grafana/provisioning/dashboards
 oc rollout status dc/grafana
 oc expose svc/grafana
 ```
