@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: alert1
+  namespace: prometheus-demo
+spec:
+  groups:
+  - name: version
+    rules:
+    - alert: VersionAlert
+      expr: version{job="bios-exporter"} == 0

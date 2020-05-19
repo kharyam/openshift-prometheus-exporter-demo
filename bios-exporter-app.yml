@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prometheus-demo
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: bios-exporter
+  name: bios-exporter
+  namespace: prometheus-demo
+spec:
+  selector:
+    matchLabels:
+      app: bios-exporter 
+  template:
+    metadata:
+      labels:
+        app: bios-exporter
+    spec:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/prometheus-demo/bios-exporter:latest
+        imagePullPolicy: Always
+        name: bios-exporter
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: dev-mem-vol
+            mountPath: /dev/mem
+        env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+      volumes:
+        - name: dev-mem-vol
+          hostPath:
+            path: /dev/mem
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: bios-exporter
+  name: bios-exporter
+  namespace: prometheus-demo
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+    name: web
+  selector:
+    app: bios-exporter
+  type: ClusterIP
