@@ -26,24 +26,27 @@ oc create serviceaccount grafana -n prometheus-demo
 oc create clusterrolebinding grafana-cluster-monitoring-view --clusterrole=cluster-monitoring-view --serviceaccount=prometheus-demo:grafana
 ```
 
-3. Grant the custom cluster role for metrics to any non cluster-admin users, e.g.
-```
-oc adm policy add-cluster-role-to-user monitor-crd-edit user1
-``` 
 
-4. Give view access to a user
-```
-oc policy add-role-to-user view username  -n prometheus-demo
-```
-
-5. Install grafana, data sources and dashboard 
+3. Install grafana, data sources and dashboard 
 ```
 sed "s/SERVICE_SECRET/$(oc sa get-token grafana)/g" grafana.yml | oc apply -f -
 oc rollout status deployment/grafana
 oc expose svc/grafana
 ```
 
-6. Log in to grafana via the route as admin/admin
+4. Log in to grafana via the route as admin/admin and navigate to the **BIOS Information** dashboard
 ```
 oc get routes
+```
+
+## Optional Steps (Grant Access)
+
+1. Grant the custom cluster role for metrics to any non cluster-admin users, e.g.
+```
+oc adm policy add-cluster-role-to-user monitor-crd-edit username 
+``` 
+
+2. Give view access to the project to a user
+```
+oc policy add-role-to-user view username  -n prometheus-demo
 ```
