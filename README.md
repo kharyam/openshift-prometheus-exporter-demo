@@ -31,24 +31,19 @@ oc create clusterrolebinding grafana-cluster-monitoring-view --clusterrole=clust
 oc adm policy add-cluster-role-to-user monitor-crd-edit user1
 ``` 
 
-4. Create alerts
-```
-oc apply -f app-alerting-rule.yml
-```
-
-5. Give view access to a user
+4. Give view access to a user
 ```
 oc policy add-role-to-user view username  -n prometheus-demo
 ```
 
-6. Install grafana, data sources and dashboard 
+5. Install grafana, data sources and dashboard 
 ```
 sed "s/SERVICE_SECRET/$(oc sa get-token grafana)/g" grafana.yml | oc apply -f -
 oc rollout status deployment/grafana
 oc expose svc/grafana
 ```
 
-7. Log in to grafana via the route as admin/admin
+6. Log in to grafana via the route as admin/admin
 ```
 oc get routes
 ```
