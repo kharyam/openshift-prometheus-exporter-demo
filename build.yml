@@ -1,0 +1,43 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+  labels:
+    build: bios-exporter
+  name: bios-exporter
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: bios-exporter:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    binary: {}
+    type: Binary
+  strategy:
+    dockerStrategy: {}
+    type: Docker
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - github:
+      secret: ucnSYULUNxXC4YrsNFE0
+    type: GitHub
+  - generic:
+      secret: 7B4vik1DPnvBZWRm9kro
+    type: Generic
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+  generation: 1
+  labels:
+    build: bios-exporter
+  name: bios-exporter
+spec:
+  lookupPolicy:
+    local: false

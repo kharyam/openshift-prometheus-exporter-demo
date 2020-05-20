@@ -15,7 +15,7 @@ def exit_gracefully(signum, frame):
 
 
 def get_bios_info():
-    """Parse dmidecoude output and return a dictionary of bios related values"""
+    """Parse dmidecode output and return a dictionary of BIOS related values"""
 
     criteria = {"Vendor": "vendor",
                 "Version": "version",
