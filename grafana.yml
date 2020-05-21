@@ -74,7 +74,7 @@ stringData:
       "links": [],
       "panels": [
         {
-          "content": "\n# SWFTS Prometheus Demo\n\n* Custom python based prometheus exporter running on all nodes as a DaemonSet. Exports BIOS information\n* Custom Grafana instance and Dashboard to display the data\n\n\n",
+          "content": "\n# Prometheus Demo\n\n* Custom python based prometheus exporter running on all nodes as a DaemonSet. Exports BIOS information\n* Custom Grafana instance and Dashboard to display the data\n\n\n",
           "datasource": null,
           "fieldConfig": {
             "defaults": {
