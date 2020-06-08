@@ -11,17 +11,17 @@ This project demonstrates the deployment of a custom promethetheus exporter in O
 
 ```
 oc apply -f config.yml
-watch oc -n openshift-user-workload-monitoring get pod
+oc rollout status sts/prometheus-user-workload -n openshift-user-workload-monitoring -w
 ```
 
 2. Deploy app that exposes metrics (privileged)
 
 ```
 oc new-project prometheus-demo
-oc apply -f build.yml
-oc start-build bios-exporter --from-dir=bios-exporter -wF
+oc apply -f build.yml -n prometheus-demo
+oc start-build bios-exporter --from-dir=bios-exporter -wF -n prometheus-demo
 oc adm policy add-scc-to-user privileged -z default -n prometheus-demo
-oc apply -f bios-exporter-app.yml
+oc apply -f bios-exporter-app.yml -n prometheus-demo
 oc create serviceaccount grafana -n prometheus-demo
 oc create clusterrolebinding grafana-cluster-monitoring-view --clusterrole=cluster-monitoring-view --serviceaccount=prometheus-demo:grafana
 ```
@@ -29,9 +29,9 @@ oc create clusterrolebinding grafana-cluster-monitoring-view --clusterrole=clust
 
 3. Install grafana, data sources and dashboard 
 ```
-sed "s/SERVICE_SECRET/$(oc sa get-token grafana)/g" grafana.yml | oc apply -f -
-oc rollout status deployment/grafana
-oc expose svc/grafana
+sed "s/SERVICE_SECRET/$(oc sa get-token grafana)/g" grafana.yml | oc apply -f - -n prometheus-demo
+oc rollout status deployment/grafana -n prometheus-demo
+oc create route edge grafana --service=grafana -n prometheus-demo
 ```
 
 4. Log in to grafana via the route as admin/admin and navigate to the **BIOS Information** dashboard
